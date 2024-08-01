@@ -7,6 +7,7 @@ namespace web_api.Models
 {
     public class Weapons
     {
-        
+       public int Id {get; set;} 
+       public string name {get; set;}
     }
 }
