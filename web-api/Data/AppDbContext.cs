@@ -8,16 +8,16 @@ using web_api.Models;
 
 namespace web_api.Data
 {
-    public class AppDbContext : DbContext 
+    public class AppDbContext : DbContext
     {
-       public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-       public DbSet<User> Users {get; set;}
-       public DbSet<Run> Runs {get; set;}
-       public DbSet<Weapons> Weapons {get; set;}
-       public DbSet<Tools> Tools {get; set;}
-       public DbSet<RunWeapon> RunWeapons {get; set;}
-       public DbSet<RunTool> RunTools {get; set;}
+        public DbSet<User> Users { get; set; }
+        public DbSet<Run> Runs { get; set; }
+        public DbSet<Weapons> Weapons { get; set; }
+        public DbSet<Tools> Tools { get; set; }
+        public DbSet<RunWeapon> RunWeapons { get; set; }
+        public DbSet<RunTool> RunTools { get; set; }
 
         /*Other Methods for later*/
 
@@ -26,8 +26,22 @@ namespace web_api.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<User>().HasData(
-                new User {Id = 1, Username = "tafry", Password = "123456"}
+                new User { Id = 1, Username = "tafry", Password = "123456" }
             );
+
+            modelBuilder.Entity<Weapons>().HasData(
+                new Weapons { Id = 1, Name = "Sword" }
+            );
+            modelBuilder.Entity<Tools>().HasData(
+                new Tools { Id = 1, Name = "CDR" }
+            );
+            modelBuilder.Entity<Maps>().HasData(
+                new Maps { Id = 1, Name = "Forrest" }
+            );
+            modelBuilder.Entity<Characters>().HasData(
+                new Characters { Id = 1, Name = "char 1" }
+            );
+
 
             modelBuilder.Entity<Run>()
                 .HasMany(r => r.RunWeapons)

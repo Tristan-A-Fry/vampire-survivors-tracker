@@ -7,7 +7,7 @@ namespace web_api.Models
 {
     public class Characters
     {
-       public int Id {get; set;} 
-       public string name {get; set;}
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 }

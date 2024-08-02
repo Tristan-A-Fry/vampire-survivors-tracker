@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\tfry\\vampire-survivors-tracker\\web-api\\web-api.csproj": {}
+    "E:\\vampire-survivors-tracker\\web-api\\web-api.csproj": {}
   },
   "projects": {
-    "C:\\Users\\tfry\\vampire-survivors-tracker\\web-api\\web-api.csproj": {
+    "E:\\vampire-survivors-tracker\\web-api\\web-api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\tfry\\vampire-survivors-tracker\\web-api\\web-api.csproj",
+        "projectUniqueName": "E:\\vampire-survivors-tracker\\web-api\\web-api.csproj",
         "projectName": "web-api",
-        "projectPath": "C:\\Users\\tfry\\vampire-survivors-tracker\\web-api\\web-api.csproj",
-        "packagesPath": "C:\\Users\\tfry\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\tfry\\vampire-survivors-tracker\\web-api\\obj\\",
+        "projectPath": "E:\\vampire-survivors-tracker\\web-api\\web-api.csproj",
+        "packagesPath": "C:\\Users\\trist\\.nuget\\packages\\",
+        "outputPath": "E:\\vampire-survivors-tracker\\web-api\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\tfry\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\trist\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -89,7 +89,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.302/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.206/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
