@@ -82,6 +82,32 @@ namespace web_api.Controllers
             return Ok(run);
         }
 
+        [HttpGet("bymap/{mapId}")]
+        public async Task<ActionResult<IEnumerable<RunDto>>> GetRunsByMap(int mapId)
+        {
+            var runs = await _context.Runs
+                .Where(r => r.MapId == mapId)
+                .Include(r => r.RunWeapons)
+                .Include(r => r.RunTools)
+                .Select(r => new RunDto{
+                    Id = r.Id,
+                    MapId = r.MapId,
+                    CharacterId = r.CharacterId,
+                    GoldEarned = r.GoldEarned,
+                    EntryDate = r.EntryDate,
+                    Weapons = r.RunWeapons.Select(rw => new WeaponsDto{
+                        WeaponId = rw.WeaponId,
+                        Level = rw.Level,
+                        IsEvolved = rw.IsEvolved
+                    }).ToList(),
+                    Tools = r.RunTools.Select(rt => new ToolsDto{
+                        ToolId = rt.ToolId,
+                        Level = rt.Level
+                    }).ToList(),
+                }).ToListAsync();
+                return Ok(runs);
+        }
+
         [HttpPost]
         public async Task<ActionResult<RunDto>> CreateRun(RunDto runDto)
         {

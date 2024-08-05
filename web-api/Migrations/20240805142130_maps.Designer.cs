@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using web_api.Data;
 
@@ -10,9 +11,11 @@ using web_api.Data;
 namespace web_api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240805142130_maps")]
+    partial class maps
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.7");
@@ -58,11 +61,6 @@ namespace web_api.Migrations
                         {
                             Id = 1,
                             Name = "Forrest"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Library"
                         });
                 });
 
@@ -223,7 +221,7 @@ namespace web_api.Migrations
                         .IsRequired();
 
                     b.HasOne("web_api.Models.Maps", "Map")
-                        .WithMany("Runs")
+                        .WithMany()
                         .HasForeignKey("MapId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -269,11 +267,6 @@ namespace web_api.Migrations
                     b.Navigation("Run");
 
                     b.Navigation("Weapon");
-                });
-
-            modelBuilder.Entity("web_api.Models.Maps", b =>
-                {
-                    b.Navigation("Runs");
                 });
 
             modelBuilder.Entity("web_api.Models.Run", b =>

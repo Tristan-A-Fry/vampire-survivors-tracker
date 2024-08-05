@@ -14,12 +14,11 @@ namespace web_api.Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<Run> Runs { get; set; }
+        public DbSet<Maps> Map {get; set;}
         public DbSet<Weapons> Weapons { get; set; }
         public DbSet<Tools> Tools { get; set; }
         public DbSet<RunWeapon> RunWeapons { get; set; }
         public DbSet<RunTool> RunTools { get; set; }
-
-        /*Other Methods for later*/
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -28,7 +27,6 @@ namespace web_api.Data
             modelBuilder.Entity<User>().HasData(
                 new User { Id = 1, Username = "tafry", Password = "123456" }
             );
-
             modelBuilder.Entity<Weapons>().HasData(
                 new Weapons { Id = 1, Name = "Sword" }
             );
@@ -38,10 +36,12 @@ namespace web_api.Data
             modelBuilder.Entity<Maps>().HasData(
                 new Maps { Id = 1, Name = "Forrest" }
             );
+            modelBuilder.Entity<Maps>().HasData(
+                new Maps { Id = 2, Name = "Library" }
+            );
             modelBuilder.Entity<Characters>().HasData(
                 new Characters { Id = 1, Name = "char 1" }
             );
-
 
             modelBuilder.Entity<Run>()
                 .HasMany(r => r.RunWeapons)
@@ -52,6 +52,11 @@ namespace web_api.Data
                 .HasMany(r => r.RunTools)
                 .WithOne(rt => rt.Run)
                 .HasForeignKey(rt => rt.RunId);
+
+            modelBuilder.Entity<Run>()
+                .HasOne(r => r.Map)
+                .WithMany(m => m.Runs)
+                .HasForeignKey(r => r.MapId);
 
             modelBuilder.Entity<RunWeapon>()
                 .HasOne(rw => rw.Weapon)
