@@ -11,14 +11,14 @@ namespace web_api.Models
         public int Id {get; set;}     
         public int MapId{get; set;}
         public int CharacterId {get; set;}
-
         public int GoldEarned {get; set;}
         public DateTime EntryDate {get; set;}
-
+        public int UserId {get; set;}
         public Maps Map {get; set;}
         public Characters Character {get; set;}
         public ICollection<RunWeapon> RunWeapons {get; set;}
         public ICollection<RunTool> RunTools {get; set;}
+        public User User {get; set;}
  
     }
 }

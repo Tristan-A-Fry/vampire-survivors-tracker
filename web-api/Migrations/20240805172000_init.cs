@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace web_api.Migrations
 {
     /// <inheritdoc />
-    public partial class runs : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,7 +19,7 @@ namespace web_api.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    name = table.Column<string>(type: "TEXT", nullable: false)
+                    Name = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -25,16 +27,16 @@ namespace web_api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Maps",
+                name: "Map",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    name = table.Column<string>(type: "TEXT", nullable: false)
+                    Name = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Maps", x => x.Id);
+                    table.PrimaryKey("PK_Map", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -43,11 +45,26 @@ namespace web_api.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    name = table.Column<string>(type: "TEXT", nullable: false)
+                    Name = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Tools", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Username = table.Column<string>(type: "TEXT", nullable: true),
+                    Password = table.Column<string>(type: "TEXT", nullable: false),
+                    Role = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -56,7 +73,7 @@ namespace web_api.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    name = table.Column<string>(type: "TEXT", nullable: false)
+                    Name = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -72,7 +89,8 @@ namespace web_api.Migrations
                     MapId = table.Column<int>(type: "INTEGER", nullable: false),
                     CharacterId = table.Column<int>(type: "INTEGER", nullable: false),
                     GoldEarned = table.Column<int>(type: "INTEGER", nullable: false),
-                    EntryDate = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    EntryDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    UserId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -84,9 +102,15 @@ namespace web_api.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Runs_Maps_MapId",
+                        name: "FK_Runs_Map_MapId",
                         column: x => x.MapId,
-                        principalTable: "Maps",
+                        principalTable: "Map",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Runs_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -146,6 +170,35 @@ namespace web_api.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "Characters",
+                columns: new[] { "Id", "Name" },
+                values: new object[] { 1, "char 1" });
+
+            migrationBuilder.InsertData(
+                table: "Map",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Forrest" },
+                    { 2, "Library" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Tools",
+                columns: new[] { "Id", "Name" },
+                values: new object[] { 1, "CDR" });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "Password", "Role", "Username" },
+                values: new object[] { 1, "123456", "Admin", "tafry" });
+
+            migrationBuilder.InsertData(
+                table: "Weapons",
+                columns: new[] { "Id", "Name" },
+                values: new object[] { 1, "Sword" });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Runs_CharacterId",
                 table: "Runs",
@@ -155,6 +208,11 @@ namespace web_api.Migrations
                 name: "IX_Runs_MapId",
                 table: "Runs",
                 column: "MapId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Runs_UserId",
+                table: "Runs",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RunTools_RunId",
@@ -199,7 +257,10 @@ namespace web_api.Migrations
                 name: "Characters");
 
             migrationBuilder.DropTable(
-                name: "Maps");
+                name: "Map");
+
+            migrationBuilder.DropTable(
+                name: "Users");
         }
     }
 }

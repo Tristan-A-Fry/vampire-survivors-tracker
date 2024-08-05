@@ -11,8 +11,8 @@ using web_api.Data;
 namespace web_api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240805143013_mapss")]
-    partial class mapss
+    [Migration("20240805180906_newUser")]
+    partial class newUser
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -61,6 +61,11 @@ namespace web_api.Migrations
                         {
                             Id = 1,
                             Name = "Forrest"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Library"
                         });
                 });
 
@@ -82,11 +87,16 @@ namespace web_api.Migrations
                     b.Property<int>("MapId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CharacterId");
 
                     b.HasIndex("MapId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Runs");
                 });
@@ -174,6 +184,10 @@ namespace web_api.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Username")
                         .HasColumnType("TEXT");
 
@@ -186,7 +200,15 @@ namespace web_api.Migrations
                         {
                             Id = 1,
                             Password = "123456",
+                            Role = "Admin",
                             Username = "tafry"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Password = "123456",
+                            Role = "Admin",
+                            Username = "bill"
                         });
                 });
 
@@ -226,9 +248,17 @@ namespace web_api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("web_api.Models.User", "User")
+                        .WithMany("Runs")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Character");
 
                     b.Navigation("Map");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("web_api.Models.RunTool", b =>
@@ -279,6 +309,11 @@ namespace web_api.Migrations
                     b.Navigation("RunTools");
 
                     b.Navigation("RunWeapons");
+                });
+
+            modelBuilder.Entity("web_api.Models.User", b =>
+                {
+                    b.Navigation("Runs");
                 });
 #pragma warning restore 612, 618
         }

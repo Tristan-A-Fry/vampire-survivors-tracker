@@ -52,9 +52,6 @@ namespace web_api.Controllers
             {
                 return Conflict(new {message = ex.Message});
             }
-
-            // var createdUser = await _userRepository.CreateUserAsync(user);
-            // return Ok(createdUser);
         }
 
         [HttpPut("{id}")]
@@ -76,16 +73,16 @@ namespace web_api.Controllers
             return NoContent();
         }
 
-        // [HttpPost("authenticate")]
-        // public async Task<ActionResult<AuthenticationResult>> Authenticate([FromBody] LoginRequest loginRequest)
-        // {
-        //     var result = await _userRepository.AuthenticateAsync(loginRequest.Username, loginRequest.Password);
-        //     if (!result.IsSuccess)
-        //     {
-        //         return Unauthorized();
-        //     }
-        //     return Ok(result);
-        // }
+        [HttpPost("authenticate")]
+        public async Task<ActionResult<AuthenticationResult>> Authenticate([FromBody] LoginRequest loginRequest)
+        {
+            var result = await _userRepository.AuthenticateAsync(loginRequest.Username, loginRequest.Password);
+            if (!result.IsSuccess)
+            {
+                return Unauthorized();
+            }
+            return Ok(result);
+        }
     }
 
     public class LoginRequest

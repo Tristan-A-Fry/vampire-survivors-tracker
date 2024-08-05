@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
@@ -25,7 +27,24 @@ namespace web_api.Controllers
         [HttpGet] //get all runs
         public async Task<ActionResult<IEnumerable<RunDto>>> GetRuns()
         {
+            // Debugging statements to check if User claims are being accessed correctly
+            if (User == null)
+            {
+                return Unauthorized("User context is not available.");
+            }
+
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized("User ID claim is not available.");
+            }
+
+            if (!int.TryParse(userIdClaim.Value, out var userId))
+            {
+                return Unauthorized("User ID claim is invalid.");
+            } 
             var runs = await _context.Runs
+                .Where(r => r.UserId == userId)
                 .Include(r => r.RunWeapons)
                 .Include(r => r.RunTools)
                 .Select(r => new RunDto
@@ -54,10 +73,12 @@ namespace web_api.Controllers
         [HttpGet("{id}")] //get singualr run
         public async Task<ActionResult<RunDto>> GetRun(int id)
         {
+
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var run = await _context.Runs
                 .Include(r => r.RunWeapons)
                 .Include(r => r.RunTools)
-                .Where(r => r.Id == id) //filter by run id
+                .Where(r => r.Id == id && r.UserId == userId) //filter by run ida and userId
                 .Select(r => new RunDto
                 {
                     Id = r.Id,
@@ -85,6 +106,8 @@ namespace web_api.Controllers
         [HttpGet("bymap/{mapId}")]
         public async Task<ActionResult<IEnumerable<RunDto>>> GetRunsByMap(int mapId)
         {
+
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var runs = await _context.Runs
                 .Where(r => r.MapId == mapId)
                 .Include(r => r.RunWeapons)
@@ -111,12 +134,38 @@ namespace web_api.Controllers
         [HttpPost]
         public async Task<ActionResult<RunDto>> CreateRun(RunDto runDto)
         {
+
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized("User ID claim is not available.");
+            }
+
+            if (!int.TryParse(userIdClaim.Value, out var userId))
+            {
+                return Unauthorized("User ID claim is invalid.");
+            }
+
+            // Check if related entities exist
+            var mapExists = await _context.Map.AnyAsync(m => m.Id == runDto.MapId);
+            if (!mapExists)
+            {
+                return BadRequest("Map does not exist.");
+            }
+
+            var characterExists = await _context.Characters.AnyAsync(c => c.Id == runDto.CharacterId);
+            if (!characterExists)
+            {
+                return BadRequest("Character does not exist.");
+            }
+
             var run = new Run
             {
                 MapId = runDto.MapId,
                 CharacterId = runDto.CharacterId,
                 GoldEarned = runDto.GoldEarned,
                 EntryDate = runDto.EntryDate,
+                UserId = userId,
                 RunWeapons = runDto.Weapons.Select(w => new RunWeapon
                 {
                     WeaponId = w.WeaponId,
@@ -141,6 +190,8 @@ namespace web_api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateRun(int id, RunDto runDto)
         {
+
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             //Check to see if the run exists
             if (id != runDto.Id)
             {
@@ -150,7 +201,7 @@ namespace web_api.Controllers
             var run = await _context.Runs
                 .Include(r => r.RunWeapons)
                 .Include(r => r.RunTools)
-                .FirstOrDefaultAsync(r => r.Id == id);
+                .FirstOrDefaultAsync(r => r.Id == id && r.UserId == userId);
 
             if (run == null)
             {
@@ -188,10 +239,12 @@ namespace web_api.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteRun(int id)
         {
+
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var run = await _context.Runs
                 .Include(r => r.RunWeapons)
                 .Include(r => r.RunTools)
-                .FirstOrDefaultAsync(r => r.Id == id);
+                .FirstOrDefaultAsync(r => r.Id == id && r.UserId == userId);
 
             if (run == null)
             {

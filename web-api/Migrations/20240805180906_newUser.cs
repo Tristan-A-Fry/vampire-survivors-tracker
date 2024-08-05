@@ -5,22 +5,22 @@
 namespace web_api.Migrations
 {
     /// <inheritdoc />
-    public partial class map2 : Migration
+    public partial class newUser : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.InsertData(
-                table: "Map",
-                columns: new[] { "Id", "Name" },
-                values: new object[] { 2, "Library" });
+                table: "Users",
+                columns: new[] { "Id", "Password", "Role", "Username" },
+                values: new object[] { 2, "123456", "Admin", "bill" });
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DeleteData(
-                table: "Map",
+                table: "Users",
                 keyColumn: "Id",
                 keyValue: 2);
         }
